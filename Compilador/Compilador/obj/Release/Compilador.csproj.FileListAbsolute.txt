@@ -1,0 +1,5 @@
+D:\Compilador\Compilador\bin\Release\Compilador.exe
+D:\Compilador\Compilador\bin\Release\Compilador.pdb
+D:\Compilador\Compilador\obj\Release\Compilador.csproj.CoreCompileInputs.cache
+D:\Compilador\Compilador\obj\Release\Compilador.exe
+D:\Compilador\Compilador\obj\Release\Compilador.pdb

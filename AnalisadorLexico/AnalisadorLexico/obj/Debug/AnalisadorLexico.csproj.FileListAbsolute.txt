@@ -1,0 +1,6 @@
+D:\AnalisadorLexico\AnalisadorLexico\bin\Debug\AnalisadorLexico.exe
+D:\AnalisadorLexico\AnalisadorLexico\bin\Debug\AnalisadorLexico.pdb
+D:\AnalisadorLexico\AnalisadorLexico\obj\Debug\AnalisadorLexico.csprojAssemblyReference.cache
+D:\AnalisadorLexico\AnalisadorLexico\obj\Debug\AnalisadorLexico.csproj.CoreCompileInputs.cache
+D:\AnalisadorLexico\AnalisadorLexico\obj\Debug\AnalisadorLexico.exe
+D:\AnalisadorLexico\AnalisadorLexico\obj\Debug\AnalisadorLexico.pdb
