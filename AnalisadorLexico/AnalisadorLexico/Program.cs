@@ -10,9 +10,9 @@ namespace AnalisadorLexico
         //Tabela de Símbolos
         public class ts
         {
-            String rotulo;
-            String estado;
-            int posicao;
+            public String rotulo;
+            public String estado;
+            public int posicao;
         }
 
         //Automato Finito Deterministico
@@ -60,6 +60,9 @@ namespace AnalisadorLexico
             //=== Criar tabela de simbolos
             List<ts> tabela = new List<ts>();
 
+            //Buffer
+            string buffer;
+
 
             //===== Definir arquivos de entrada
             string[] codigo = System.IO.File.ReadAllLines(@"codigo.txt");
@@ -70,7 +73,7 @@ namespace AnalisadorLexico
             foreach (String linha in afd)
             {
                 AFD afdLin = new AFD();
-                string buffer = "";
+                buffer = "";
                 foreach(char c in linha)
                 {
                     if (c == ';')
@@ -97,9 +100,48 @@ namespace AnalisadorLexico
             Console.WriteLine("Teste ma[L][6] = " + afdMatriz[teste[0]].afdCol[teste[1]]);
 
             //=== Ler caracter por caracter do codigo e verificar estados no AFD
+            string estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+            List<int> indices;  //Indices da matriz AFD
+            buffer = "";
+            int pos = 0;    //Contador de posição no arquivo
+            ts tsItem;  //Item da tabela de simbolos
             foreach (String linha in codigo)
             {
+                foreach(char c in linha)
+                {
+                    if(c == ' ')    //Separadores
+                    {
+                        tsItem = new ts();
+                        tsItem.estado = estado;
+                        tsItem.posicao = pos;
+                        tsItem.rotulo = buffer;
+                        buffer = "";
+                        tabela.Add(tsItem);
+                        estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+                    }
+                    else
+                    {
+                        indices = FindState(estado, c.ToString(), afdMatriz);
+                        if (indices == null) Console.WriteLine("Erro ao achar estado.");
+                        else estado = afdMatriz[indices[0]].afdCol[indices[1]];
+                        buffer += c;
+                    }
+                    pos++;
+                }
+                //Fim de linha também é separador
+                tsItem = new ts();
+                tsItem.estado = estado;
+                tsItem.posicao = pos;
+                tsItem.rotulo = buffer;
+                buffer = "";
+                tabela.Add(tsItem);
+                estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+            }
 
+            //=== Imprimir tabela de simbolos
+            foreach(ts item in tabela)
+            {
+                Console.WriteLine("Pos:" + item.posicao + " Estado:" + item.estado + " Rotulo:" + item.rotulo);
             }
         }
     }
