@@ -26,6 +26,34 @@ namespace AnalisadorLexico
             }
 
         }
+        
+
+        //=== Encontrar estado na matriz AFD
+        static List<int> FindState(string estado, string simbolo, List<AFD> matriz)
+        {
+            int i = 0, j = 0;
+            List<int> index = new List<int>();
+            foreach (AFD afd in matriz)
+            {
+                if (afd.afdCol[0].Equals("*"+estado) || afd.afdCol[0].Equals(estado))
+                {
+                    j = 0;
+                    foreach(string col in matriz[0].afdCol)
+                    {
+                        if (col.Equals(simbolo))
+                        {
+                            index.Add(i);
+                            index.Add(j);
+                            return index;
+                        }
+                        j++;
+                    }
+                }
+                i++;
+            }
+            return null;
+        }
+
 
         static void Main(string[] args)
         {
@@ -64,7 +92,9 @@ namespace AnalisadorLexico
                 }
                 Console.WriteLine("");
             }
-            Console.WriteLine("ma[9][4] = " + afdMatriz[9].afdCol[4]);
+            Console.WriteLine("Teste ma[9][4] = " + afdMatriz[9].afdCol[4]);
+            List<int> teste = FindState("L", "6", afdMatriz);
+            Console.WriteLine("Teste ma[L][6] = " + afdMatriz[teste[0]].afdCol[teste[1]]);
 
             //=== Ler caracter por caracter do codigo e verificar estados no AFD
             foreach (String linha in codigo)
