@@ -96,8 +96,8 @@ namespace AnalisadorLexico
                 Console.WriteLine("");
             }
             Console.WriteLine("Teste ma[9][4] = " + afdMatriz[9].afdCol[4]);
-            List<int> teste = FindState("L", "6", afdMatriz);
-            Console.WriteLine("Teste ma[L][6] = " + afdMatriz[teste[0]].afdCol[teste[1]]);
+            //List<int> teste = FindState("L", "6", afdMatriz);
+            //Console.WriteLine("Teste ma[L][6] = " + afdMatriz[teste[0]].afdCol[teste[1]]);
 
             //=== Ler caracter por caracter do codigo e verificar estados no AFD
             string estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
