@@ -101,6 +101,7 @@ namespace AnalisadorLexico
 
             //=== Ler caracter por caracter do codigo e verificar estados no AFD
             string estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+            string estadoAnt = "";  //Estado anterior
             List<int> indices;  //Indices da matriz AFD
             buffer = "";
             int pos = 0;    //Contador de posição no arquivo
@@ -109,12 +110,33 @@ namespace AnalisadorLexico
             {
                 foreach(char c in linha)
                 {
-                    if(c == ' ')    //Separadores
+                    if(c == ' ' && !buffer.Equals(""))    //Separadores sem estado
                     {
                         tsItem = new ts();
                         tsItem.estado = estado;
-                        tsItem.posicao = pos;
+                        tsItem.posicao = pos-1;
                         tsItem.rotulo = buffer;
+                        buffer = "";
+                        tabela.Add(tsItem);
+                        estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+                    }
+                    else if (c == '*' || c == '/' || c == '+' || c == '-' || c == '=' || c == '(' || c == ')' || c == '!')  //Separadores com estado
+                    {
+                        //Salvar o que tem antes no buffer (se tiver)
+                        if (!buffer.Equals(""))
+                        {
+                            tsItem = new ts();
+                            tsItem.estado = estadoAnt;
+                            tsItem.posicao = pos;
+                            tsItem.rotulo = buffer;
+                            tabela.Add(tsItem);
+                        }
+
+                        //Agora salva o separador
+                        tsItem = new ts();
+                        tsItem.estado = estado;
+                        tsItem.posicao = pos;
+                        tsItem.rotulo = c.ToString();
                         buffer = "";
                         tabela.Add(tsItem);
                         estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
@@ -122,8 +144,11 @@ namespace AnalisadorLexico
                     else
                     {
                         indices = FindState(estado, c.ToString(), afdMatriz);
-                        if (indices == null) Console.WriteLine("Erro ao achar estado.");
-                        else estado = afdMatriz[indices[0]].afdCol[indices[1]];
+                        if (indices == null) Console.WriteLine("Erro ao achar estado: (" + estado + ", " + c.ToString() + ")");
+                        else {
+                            estadoAnt = estado;
+                            estado = afdMatriz[indices[0]].afdCol[indices[1]];
+                        }
                         buffer += c;
                     }
                     pos++;
