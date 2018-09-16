@@ -110,6 +110,7 @@ namespace AnalisadorLexico
             {
                 foreach(char c in linha)
                 {
+                    Console.WriteLine(c);
                     if(c == ' ' && !buffer.Equals(""))    //Separadores sem estado
                     {
                         tsItem = new ts();
@@ -120,7 +121,7 @@ namespace AnalisadorLexico
                         tabela.Add(tsItem);
                         estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
                     }
-                    else if (c == '*' || c == '/' || c == '+' || c == '-' || c == '=' || c == '(' || c == ')' || c == '!')  //Separadores com estado
+                    else if (c == '*' || c == '/' || c == '+' || c == '-' || c == '(' || c == ')')  //Separadores com estado
                     {
                         //Salvar o que tem antes no buffer (se tiver)
                         if (!buffer.Equals(""))

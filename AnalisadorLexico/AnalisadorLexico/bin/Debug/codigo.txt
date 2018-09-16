@@ -1,5 +1,9 @@
-if 1 &()
-ifn &6
-ifn & 16
-ifn 161()
-else &()
+au1i = 5
+a = 0
+ao
+
+testa (au1i @= 10)
+au1i = au1i + 1
+testaDenovo au1i @= a
+a = a + 1
+falha ao = au1i + a * (1 / 3) + 2
