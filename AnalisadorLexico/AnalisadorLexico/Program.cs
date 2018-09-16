@@ -54,6 +54,27 @@ namespace AnalisadorLexico
             return null;
         }
 
+        //=== Imprimir FITA de saída em CSV
+        public static void ImprimirCSV(List<ts> tabela, String nomeArquivo)
+        {
+            String text = "";
+
+            text += "Pos" + ';';
+            text += "Estado" + ';';
+            text += "Rotulo" + ';';
+            text += "\r\n";
+
+            foreach (ts item in tabela)
+            {
+                text += item.posicao + ";";
+                text += item.estado + ';';
+                text += item.rotulo + ';';
+                text += "\r\n";
+            }
+            
+            System.IO.File.WriteAllText(nomeArquivo, text);
+        }
+
 
         static void Main(string[] args)
         {
@@ -169,6 +190,9 @@ namespace AnalisadorLexico
             {
                 Console.WriteLine("Pos:" + item.posicao + " Estado:" + item.estado + " Rotulo:" + item.rotulo);
             }
+
+            //=== Imprimir em arquivo CSV
+            ImprimirCSV(tabela, "FitaDeSaida.csv");
         }
     }
 }

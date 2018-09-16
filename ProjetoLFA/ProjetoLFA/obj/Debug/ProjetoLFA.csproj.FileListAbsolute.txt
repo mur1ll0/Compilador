@@ -10,3 +10,9 @@ D:\ProjetoLFA\ProjetoLFA\obj\Debug\ProjetoLFA.csprojAssemblyReference.cache
 D:\ProjetoLFA\ProjetoLFA\obj\Debug\ProjetoLFA.csproj.CoreCompileInputs.cache
 D:\ProjetoLFA\ProjetoLFA\obj\Debug\ProjetoLFA.exe
 D:\ProjetoLFA\ProjetoLFA\obj\Debug\ProjetoLFA.pdb
+D:\AnalisadorLexicoGit\ProjetoLFA\ProjetoLFA\bin\Debug\ProjetoLFA.exe
+D:\AnalisadorLexicoGit\ProjetoLFA\ProjetoLFA\bin\Debug\ProjetoLFA.pdb
+D:\AnalisadorLexicoGit\ProjetoLFA\ProjetoLFA\obj\Debug\ProjetoLFA.csprojAssemblyReference.cache
+D:\AnalisadorLexicoGit\ProjetoLFA\ProjetoLFA\obj\Debug\ProjetoLFA.csproj.CoreCompileInputs.cache
+D:\AnalisadorLexicoGit\ProjetoLFA\ProjetoLFA\obj\Debug\ProjetoLFA.exe
+D:\AnalisadorLexicoGit\ProjetoLFA\ProjetoLFA\obj\Debug\ProjetoLFA.pdb

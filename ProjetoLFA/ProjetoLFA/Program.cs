@@ -63,7 +63,7 @@ namespace ProjetoLFA
 
         static void Main(string[] args)
         {
-            String[] nomesParaNovasRegras = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "X", "W", "Y", "Z" };
+            String[] nomesParaNovasRegras = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "X", "W", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AX", "AW", "AY", "AZ" };
             List<GramaticaRegular> gramaticasRegulares = new List<GramaticaRegular>();
             List<String> tokens = new List<String>();
             List<Char> alfabeto = new List<Char>();
@@ -96,7 +96,7 @@ namespace ProjetoLFA
                 {
                     if (linha.Length > 0)
                     {
-                        if ((linha.Contains("<")) && (linha.Contains(">")))
+                        if ((linha.Contains("::=")))
                         {
 
                             GramaticaRegular gramaticaRegular = new GramaticaRegular();
@@ -142,7 +142,7 @@ namespace ProjetoLFA
                 {
                     if (linha.Length > 0)
                     {
-                        if ((linha.Contains("<")) && (linha.Contains(">")))
+                        if ((linha.Contains("::=")))
                         {
 
                             int read = 0;
@@ -708,7 +708,7 @@ namespace ProjetoLFA
                         var achou = 0;
                         foreach (var transicao in regra.transicoes)
                         {
-                            if ((transicao.simbolo.Equals(letra) && transicao.valida) || (letra.Equals('&') && regra.final))
+                            if (transicao.simbolo.Equals(letra) && transicao.valida)
                             {
                                 achou = 1;
                                 break;
@@ -815,6 +815,7 @@ namespace ProjetoLFA
 
             text += "\r\n";
 
+            int needcoma = 0;
             foreach (String estado in nomesEstados)
             {
 
@@ -829,13 +830,22 @@ namespace ProjetoLFA
                         text += estado + ';';
                         foreach (char letra in alfabeto)
                         {
+                            needcoma = 0;
                             foreach (var transicao in regra.transicoes)
                             {
                                 if (transicao.valida)
                                 {
                                     if (transicao.simbolo == letra)
                                     {
-                                        text += transicao.regraTransicao + ',';
+                                        if(needcoma == 1)
+                                        {
+                                            text += transicao.regraTransicao + ',';
+                                        }
+                                        else
+                                        {
+                                            text += transicao.regraTransicao;
+                                            needcoma = 1;
+                                        }
                                     }
                                 }
                             }
