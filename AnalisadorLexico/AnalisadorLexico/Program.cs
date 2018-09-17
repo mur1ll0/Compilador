@@ -129,60 +129,69 @@ namespace AnalisadorLexico
             ts tsItem;  //Item da tabela de simbolos
             foreach (String linha in codigo)
             {
-                foreach(char c in linha)
+                if(linha.Length > 0)
                 {
-                    Console.WriteLine(c);
-                    if(c == ' ' && !buffer.Equals(""))    //Separadores sem estado
+                    foreach (char c in linha)
                     {
-                        tsItem = new ts();
-                        tsItem.estado = estado;
-                        tsItem.posicao = pos-1;
-                        tsItem.rotulo = buffer;
-                        buffer = "";
-                        tabela.Add(tsItem);
-                        estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
-                    }
-                    else if (c == '*' || c == '/' || c == '+' || c == '-' || c == '(' || c == ')')  //Separadores com estado
-                    {
-                        //Salvar o que tem antes no buffer (se tiver)
-                        if (!buffer.Equals(""))
+                        Console.WriteLine(c);
+                        if (c == ' ')    //Separadores sem estado
                         {
-                            tsItem = new ts();
-                            tsItem.estado = estadoAnt;
-                            tsItem.posicao = pos;
-                            tsItem.rotulo = buffer;
-                            tabela.Add(tsItem);
+                            if (!buffer.Equals(""))
+                            {
+                                tsItem = new ts();
+                                tsItem.estado = estado;
+                                tsItem.posicao = pos - 1;
+                                tsItem.rotulo = buffer;
+                                buffer = "";
+                                tabela.Add(tsItem);
+                                estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+                            }
                         }
+                        else if (c == '*' || c == '/' || c == '+' || c == '-' || c == '(' || c == ')')  //Separadores com estado
+                        {
+                            //Salvar o que tem antes no buffer (se tiver)
+                            if (!buffer.Equals(""))
+                            {
+                                tsItem = new ts();
+                                tsItem.estado = estadoAnt;
+                                tsItem.posicao = pos;
+                                tsItem.rotulo = buffer;
+                                tabela.Add(tsItem);
+                                pos++;
+                            }
 
-                        //Agora salva o separador
-                        tsItem = new ts();
-                        tsItem.estado = estado;
-                        tsItem.posicao = pos;
-                        tsItem.rotulo = c.ToString();
-                        buffer = "";
-                        tabela.Add(tsItem);
-                        estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
-                    }
-                    else
-                    {
-                        indices = FindState(estado, c.ToString(), afdMatriz);
-                        if (indices == null) Console.WriteLine("Erro ao achar estado: (" + estado + ", " + c.ToString() + ")");
-                        else {
-                            estadoAnt = estado;
-                            estado = afdMatriz[indices[0]].afdCol[indices[1]];
+                            //Agora salva o separador
+                            tsItem = new ts();
+                            tsItem.estado = estado;
+                            tsItem.posicao = pos;
+                            tsItem.rotulo = c.ToString();
+                            buffer = "";
+                            tabela.Add(tsItem);
+                            estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
                         }
-                        buffer += c;
+                        else
+                        {
+                            indices = FindState(estado, c.ToString(), afdMatriz);
+                            if (indices == null) Console.WriteLine("Erro ao achar estado: (" + estado + ", " + c.ToString() + ")");
+                            else
+                            {
+                                estadoAnt = estado;
+                                estado = afdMatriz[indices[0]].afdCol[indices[1]];
+                            }
+                            buffer += c;
+                        }
+                        pos++;
                     }
-                    pos++;
+
+                    //Fim de linha também é separador
+                    tsItem = new ts();
+                    tsItem.estado = estado;
+                    tsItem.posicao = pos;
+                    tsItem.rotulo = buffer;
+                    buffer = "";
+                    tabela.Add(tsItem);
+                    estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
                 }
-                //Fim de linha também é separador
-                tsItem = new ts();
-                tsItem.estado = estado;
-                tsItem.posicao = pos;
-                tsItem.rotulo = buffer;
-                buffer = "";
-                tabela.Add(tsItem);
-                estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
             }
 
             //=== Imprimir tabela de simbolos

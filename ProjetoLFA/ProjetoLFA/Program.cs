@@ -384,14 +384,14 @@ namespace ProjetoLFA
 
                         itemRegra = new ItemRegra();
                         itemRegra.simbolo = '&';
-                        itemRegra.regraTransicao = "X";
+                        itemRegra.regraTransicao = "XX";
                         regra.transicoes.Add(itemRegra);
                     }
                     foreach(var transicao in regra.transicoes)
                     {
                         if (transicao.regraTransicao.Length == 0)
                         {
-                            transicao.regraTransicao = "X";
+                            transicao.regraTransicao = "XX";
                             
                         }
                         if (transicao.simbolo.Equals('\0'))
@@ -830,16 +830,16 @@ namespace ProjetoLFA
                         text += estado + ';';
                         foreach (char letra in alfabeto)
                         {
-                            needcoma = 0;
                             foreach (var transicao in regra.transicoes)
                             {
+								needcoma = 0;
                                 if (transicao.valida)
                                 {
                                     if (transicao.simbolo == letra)
                                     {
                                         if(needcoma == 1)
                                         {
-                                            text += transicao.regraTransicao + ',';
+                                            text += ',' + transicao.regraTransicao;
                                         }
                                         else
                                         {
