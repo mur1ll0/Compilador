@@ -1,0 +1,11 @@
+
+*.exe
+*.pdb
+*.cache
+*.pdb
+AnalisadorLexico/AnalisadorLexico/bin/Debug/AnalisadorLexico.pdb
+AnalisadorLexico/AnalisadorLexico/bin/Debug/AnalisadorLexico.pdb
+AnalisadorLexico/AnalisadorLexico/bin/Debug/codigo.txt
+AnalisadorLexico/AnalisadorLexico/obj/Debug/AnalisadorLexico.csproj.CoreCompileInputs.cache
+AnalisadorLexico/AnalisadorLexico/obj/Debug/AnalisadorLexico.exe
+AnalisadorLexico/AnalisadorLexico/obj/Debug/AnalisadorLexico.pdb
