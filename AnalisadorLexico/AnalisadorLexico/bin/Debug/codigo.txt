@@ -1,3 +1,6 @@
+test
+testa
+testas
 au1i = 5
 a = 0
 ao

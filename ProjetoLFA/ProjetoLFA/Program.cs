@@ -63,7 +63,7 @@ namespace ProjetoLFA
 
         static void Main(string[] args)
         {
-            String[] nomesParaNovasRegras = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "X", "W", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AX", "AW", "AY", "AZ" };
+            String[] nomesParaNovasRegras = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AX", "AW", "AY", "AZ" };
             List<GramaticaRegular> gramaticasRegulares = new List<GramaticaRegular>();
             List<String> tokens = new List<String>();
             List<Char> alfabeto = new List<Char>();
@@ -82,7 +82,7 @@ namespace ProjetoLFA
             {
                 foreach (String linha in linhasArquivo)
                 {
-                    if ((linha.Length > 0) && (!linha.Contains("<")))
+                    if ((linha.Length > 0) && (!linha.Contains("::=")))
                     {
                         tokens.Add(linha);
                     }
@@ -373,6 +373,24 @@ namespace ProjetoLFA
                     }
                 }
             }
+
+            Console.WriteLine("\nDEBUG ATE ADICIONAR REGRAS E TRANSICOES\n");
+            foreach(var m in regras) {
+                if (m.valida)
+                {
+                    if (m.final) Console.Write("*");
+                    Console.Write("<"+m.nomeRegra + "> ::= ");
+                    foreach(var trans in m.transicoes)
+                    {
+                        if (trans.valida)
+                        {
+                            Console.Write(trans.simbolo + "<" + trans.regraTransicao + "> | ");
+                        }
+                    }
+                    Console.WriteLine("");
+                }
+            }
+
             //====== Identificar estados finais e epsilon transições
             {
                 ItemRegra itemRegra = null;
@@ -384,14 +402,14 @@ namespace ProjetoLFA
 
                         itemRegra = new ItemRegra();
                         itemRegra.simbolo = '&';
-                        itemRegra.regraTransicao = "XX";
+                        itemRegra.regraTransicao = "X";
                         regra.transicoes.Add(itemRegra);
                     }
                     foreach(var transicao in regra.transicoes)
                     {
                         if (transicao.regraTransicao.Length == 0)
                         {
-                            transicao.regraTransicao = "XX";
+                            transicao.regraTransicao = "X";
                             
                         }
                         if (transicao.simbolo.Equals('\0'))
@@ -406,11 +424,31 @@ namespace ProjetoLFA
                     }
                 }
             }
+
             //====== Imprimir regras
             {
                 ImprimirRegras(regras);
                 ImprimirCSV(regras, alfabeto, nomesEstados, "AutomatoFinitoOriginal.csv");
             }
+
+            Console.WriteLine("\nDEBUG DEPOIS DE IDENTIFICAR ESTADOS FINAIS E EPSILON TANSICOES\n");
+            foreach (var m in regras)
+            {
+                if (m.valida)
+                {
+                    if (m.final) Console.Write("*");
+                    Console.Write("<" + m.nomeRegra + "> ::= ");
+                    foreach (var trans in m.transicoes)
+                    {
+                        if (trans.valida)
+                        {
+                            Console.Write(trans.simbolo + "<" + trans.regraTransicao + "> | ");
+                        }
+                    }
+                    Console.WriteLine("");
+                }
+            }
+
             //====== Remover Epsilon Transições
             {
 
@@ -461,6 +499,25 @@ namespace ProjetoLFA
                 ImprimirRegras(regras);
                 ImprimirCSV(regras, alfabeto, nomesEstados, "AutomatoFinitoSemEspilonTransicoes.csv");
             }
+
+            Console.WriteLine("\nDEBUG DEPOIS DE REMOVER EPSILON TANSICOES\n");
+            foreach (var m in regras)
+            {
+                if (m.valida)
+                {
+                    if (m.final) Console.Write("*");
+                    Console.Write("<" + m.nomeRegra + "> ::= ");
+                    foreach (var trans in m.transicoes)
+                    {
+                        if (trans.valida)
+                        {
+                            Console.Write(trans.simbolo + "<" + trans.regraTransicao + "> | ");
+                        }
+                    }
+                    Console.WriteLine("");
+                }
+            }
+
             //====== Determinização
             {
                 Console.WriteLine("Determinização: ");
@@ -506,6 +563,9 @@ namespace ProjetoLFA
                             }
                         }
                     }
+
+                    ImprimirRegras(regras);
+                    ImprimirCSV(regras, alfabeto, nomesEstados, "AutomatoFinitoDeterminizado.csv");
 
 
                     foreach (var contador in contadorTransicoes)
@@ -830,9 +890,9 @@ namespace ProjetoLFA
                         text += estado + ';';
                         foreach (char letra in alfabeto)
                         {
+                            needcoma = 0;
                             foreach (var transicao in regra.transicoes)
                             {
-								needcoma = 0;
                                 if (transicao.valida)
                                 {
                                     if (transicao.simbolo == letra)
