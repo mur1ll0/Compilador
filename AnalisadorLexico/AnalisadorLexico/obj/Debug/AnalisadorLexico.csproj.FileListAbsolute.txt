@@ -4,3 +4,9 @@ D:\AnalisadorLexico\AnalisadorLexico\obj\Debug\AnalisadorLexico.csprojAssemblyRe
 D:\AnalisadorLexico\AnalisadorLexico\obj\Debug\AnalisadorLexico.csproj.CoreCompileInputs.cache
 D:\AnalisadorLexico\AnalisadorLexico\obj\Debug\AnalisadorLexico.exe
 D:\AnalisadorLexico\AnalisadorLexico\obj\Debug\AnalisadorLexico.pdb
+D:\AnalisadorLexicoGit\AnalisadorLexico\AnalisadorLexico\bin\Debug\AnalisadorLexico.exe
+D:\AnalisadorLexicoGit\AnalisadorLexico\AnalisadorLexico\bin\Debug\AnalisadorLexico.pdb
+D:\AnalisadorLexicoGit\AnalisadorLexico\AnalisadorLexico\obj\Debug\AnalisadorLexico.csprojAssemblyReference.cache
+D:\AnalisadorLexicoGit\AnalisadorLexico\AnalisadorLexico\obj\Debug\AnalisadorLexico.csproj.CoreCompileInputs.cache
+D:\AnalisadorLexicoGit\AnalisadorLexico\AnalisadorLexico\obj\Debug\AnalisadorLexico.exe
+D:\AnalisadorLexicoGit\AnalisadorLexico\AnalisadorLexico\obj\Debug\AnalisadorLexico.pdb

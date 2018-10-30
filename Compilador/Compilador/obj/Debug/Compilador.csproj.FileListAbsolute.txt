@@ -4,3 +4,9 @@ D:\Compilador\Compilador\obj\Debug\Compilador.csprojAssemblyReference.cache
 D:\Compilador\Compilador\obj\Debug\Compilador.csproj.CoreCompileInputs.cache
 D:\Compilador\Compilador\obj\Debug\Compilador.exe
 D:\Compilador\Compilador\obj\Debug\Compilador.pdb
+D:\AnalisadorLexicoGit\Compilador\Compilador\bin\Debug\Compilador.exe
+D:\AnalisadorLexicoGit\Compilador\Compilador\bin\Debug\Compilador.pdb
+D:\AnalisadorLexicoGit\Compilador\Compilador\obj\Debug\Compilador.csprojAssemblyReference.cache
+D:\AnalisadorLexicoGit\Compilador\Compilador\obj\Debug\Compilador.csproj.CoreCompileInputs.cache
+D:\AnalisadorLexicoGit\Compilador\Compilador\obj\Debug\Compilador.exe
+D:\AnalisadorLexicoGit\Compilador\Compilador\obj\Debug\Compilador.pdb

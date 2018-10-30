@@ -132,7 +132,8 @@ namespace Compilador
                                         {
                                             //Reconheceu apenas símbolo terminal, com Epsilon transição
                                             Producao producao = new Producao();
-                                            producao.simboloT = Char.Parse(buffer);
+                                            //producao.simboloT = Char.Parse(buffer);
+                                            producao.simboloT = buffer[0];
                                             regra.producoes.Add(producao);
                                             prodCount++;
                                         }
