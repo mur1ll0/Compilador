@@ -413,54 +413,69 @@ namespace ProjetoLFA
                 ImprimirCSV(regras, alfabeto, nomesEstados, "AutomatoFinitoOriginal.csv");
             }
             //====== Remover Epsilon Transições
-            {
 
-                foreach (var regra in regras)
+            
+            {
+                bool alterou;
+
+                do
                 {
-                    foreach (var transicao in regra.transicoes)
+                    alterou = false;
+                    foreach (var regra in regras)
                     {
-                        if (transicao.simbolo.Equals('\0') || transicao.simbolo.Equals('&'))
+                        if (regra.valida)
                         {
-                            var nomeRegraDestino = transicao.regraTransicao;
-                            foreach (var regraDestino in regras)
+                            foreach (var transicao in regra.transicoes)
                             {
-                                if (regraDestino.nomeRegra == nomeRegraDestino)
+
+                                if ((transicao.simbolo.Equals('\0') || transicao.simbolo.Equals('&')) && transicao.valida)
                                 {
-                                    foreach (var transicaoRegraDestino in regraDestino.transicoes)
+                                    var nomeRegraDestino = transicao.regraTransicao;
+                                    foreach (var regraDestino in regras)
                                     {
-                                        ItemRegraAdicionar transicaoAdicionar = new ItemRegraAdicionar
+                                        if (regraDestino.nomeRegra == nomeRegraDestino)
                                         {
-                                            final = regraDestino.final,
-                                            nomeRegra = regra.nomeRegra,
-                                            regraTransicao = transicaoRegraDestino.regraTransicao,
-                                            simbolo = transicaoRegraDestino.simbolo
-                                        };
-                                        transicoesAdicionar.Add(transicaoAdicionar);
+                                            foreach (var transicaoRegraDestino in regraDestino.transicoes)
+                                            {
+                                                ItemRegraAdicionar transicaoAdicionar = new ItemRegraAdicionar
+                                                {
+                                                    final = regraDestino.final,
+                                                    nomeRegra = regra.nomeRegra,
+                                                    regraTransicao = transicaoRegraDestino.regraTransicao,
+                                                    simbolo = transicaoRegraDestino.simbolo
+                                                };
+                                                transicoesAdicionar.Add(transicaoAdicionar);
+                                                alterou = true;
+                                            }
+                                        }
                                     }
+                                    transicao.valida = false;
+
                                 }
+
                             }
-                            transicao.valida = false;
                         }
                     }
-                }
-                foreach (var transicao in transicoesAdicionar)
-                {
-                    ItemRegra novaTransicao = new ItemRegra
+                    foreach (var transicao in transicoesAdicionar)
                     {
-                        regraTransicao = transicao.regraTransicao,
-                        simbolo = transicao.simbolo
-                    };
+                        ItemRegra novaTransicao = new ItemRegra
+                        {
+                            regraTransicao = transicao.regraTransicao,
+                            simbolo = transicao.simbolo
+                        };
 
-                    Regra regra = BuscarRegra(regras, transicao.nomeRegra);
-                    if (!VerificaExistenciaTransicaoRegra(regra, novaTransicao))
-                    {
-                        regra.transicoes.Add(novaTransicao);
-                        if (transicao.final)
-                            regra.final = true;
+
+                        Regra regra = BuscarRegra(regras, transicao.nomeRegra);
+                        if (!VerificaExistenciaTransicaoRegra(regra, novaTransicao))
+                        {
+                            regra.transicoes.Add(novaTransicao);
+                            if (transicao.final)
+                                regra.final = true;
+                        }
                     }
-                }
-                ImprimirRegras(regras);
-                ImprimirCSV(regras, alfabeto, nomesEstados, "AutomatoFinitoSemEspilonTransicoes.csv");
+                    ImprimirRegras(regras);
+                    ImprimirCSV(regras, alfabeto, nomesEstados, "AutomatoFinitoSemEspilonTransicoes.csv");
+                } while (alterou == true);
             }
             //====== Determinização
             {
