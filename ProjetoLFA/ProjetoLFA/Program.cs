@@ -82,7 +82,7 @@ namespace ProjetoLFA
             {
                 foreach (String linha in linhasArquivo)
                 {
-                    if ((linha.Length > 0) && (!linha.Contains("<")))
+                    if ((linha.Length > 0) && (!linha.Contains("::=")))
                     {
                         tokens.Add(linha);
                     }
