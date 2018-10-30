@@ -416,7 +416,7 @@ namespace ProjetoLFA
                         itemRegra = new ItemRegra();
                         itemRegra.simbolo = '&';
                         itemRegra.regraTransicao = "X";
-                        regra.transicoes.Add(itemRegra); 
+                        regra.transicoes.Add(itemRegra);
 >>>>>>> 25dca1620fd1157dbbfc191f6a04d3bbba3fa5c0
                     }
                     /*foreach(var transicao in regra.transicoes)
