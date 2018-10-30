@@ -382,12 +382,12 @@ namespace ProjetoLFA
                     {
                         regra.final = true;
 
-                        itemRegra = new ItemRegra();
-                        itemRegra.simbolo = '&';
-                        itemRegra.regraTransicao = "XX";
-                        regra.transicoes.Add(itemRegra);
+                        //itemRegra = new ItemRegra();
+                        //itemRegra.simbolo = '&';
+                        //itemRegra.regraTransicao = "XX";
+                        //regra.transicoes.Add(itemRegra);
                     }
-                    foreach(var transicao in regra.transicoes)
+                    /*foreach(var transicao in regra.transicoes)
                     {
                         if (transicao.regraTransicao.Length == 0)
                         {
@@ -404,7 +404,7 @@ namespace ProjetoLFA
                         }
                         if (transicao.simbolo.Equals('&'))
                             regra.final = true;
-                    }
+                    }*/
                 }
             }
             //====== Imprimir regras
