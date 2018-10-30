@@ -63,7 +63,7 @@ namespace ProjetoLFA
 
         static void Main(string[] args)
         {
-            String[] nomesParaNovasRegras = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW", "AY", "AZ" };
+            String[] nomesParaNovasRegras = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "X", "W", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AX", "AW", "AY", "AZ" };
             List<GramaticaRegular> gramaticasRegulares = new List<GramaticaRegular>();
             List<String> tokens = new List<String>();
             List<Char> alfabeto = new List<Char>();
@@ -75,17 +75,18 @@ namespace ProjetoLFA
             String estadoInicial = "S";
 
             //===== Leitura do arquivo
-            
+
             string[] linhasArquivo = System.IO.File.ReadAllLines(@"Entrada.txt");
-            
+
             //====== Define os tokens
             {
                 foreach (String linha in linhasArquivo)
                 {
-                    if ((linha.Length > 0) && (!linha.Contains("::=")))
+                    if ((linha.Length > 0) && (!linha.Contains("<")))
                     {
                         tokens.Add(linha);
                     }
+
                 }
 
             }
@@ -114,13 +115,9 @@ namespace ProjetoLFA
                                         break;
                                     case '>':
                                         if (!nomesEstados.Contains(estado))
-                                        {
                                             nomesEstados.Add(estado);
-                                        }                                            
                                         if (primeiro == 1)
-                                        {
                                             gramaticaRegular.nomeEstado = estado;
-                                        }
                                         primeiro = 0;
                                         read = 0;
                                         break;
@@ -385,16 +382,16 @@ namespace ProjetoLFA
                     {
                         regra.final = true;
 
-                        //itemRegra = new ItemRegra();
-                        //itemRegra.simbolo = '&';
-                        //itemRegra.regraTransicao = "X";
-                        //regra.transicoes.Add(itemRegra);
+                        itemRegra = new ItemRegra();
+                        itemRegra.simbolo = '&';
+                        itemRegra.regraTransicao = "XX";
+                        regra.transicoes.Add(itemRegra);
                     }
-                    /*foreach(var transicao in regra.transicoes)
+                    foreach(var transicao in regra.transicoes)
                     {
                         if (transicao.regraTransicao.Length == 0)
                         {
-                            transicao.regraTransicao = "X";
+                            transicao.regraTransicao = "XX";
                             
                         }
                         if (transicao.simbolo.Equals('\0'))
@@ -405,9 +402,8 @@ namespace ProjetoLFA
                             }
                             transicao.simbolo = '&';
                         }
-                        if (transicao.simbolo.Equals('&'))
-                            regra.final = true;
-                    }*/
+                        if (transicao.simbolo.Equals('&')) regra.final = true;
+                    }
                 }
             }
             //====== Imprimir regras
@@ -417,59 +413,51 @@ namespace ProjetoLFA
             }
             //====== Remover Epsilon Transições
             {
-                bool alterou;
-                do
-                {
-                    alterou = false;
 
-                    foreach (var regra in regras)
+                foreach (var regra in regras)
+                {
+                    foreach (var transicao in regra.transicoes)
                     {
-                        if (regra.valida) {
-                            foreach (var transicao in regra.transicoes)
+                        if (transicao.simbolo.Equals('\0') || transicao.simbolo.Equals('&'))
+                        {
+                            var nomeRegraDestino = transicao.regraTransicao;
+                            foreach (var regraDestino in regras)
                             {
-                                if ((transicao.simbolo.Equals('\0') || transicao.simbolo.Equals('&')) && transicao.valida)
+                                if (regraDestino.nomeRegra == nomeRegraDestino)
                                 {
-                                    var nomeRegraDestino = transicao.regraTransicao;
-                                    foreach (var regraDestino in regras)
+                                    foreach (var transicaoRegraDestino in regraDestino.transicoes)
                                     {
-                                        if (regraDestino.nomeRegra == nomeRegraDestino)
+                                        ItemRegraAdicionar transicaoAdicionar = new ItemRegraAdicionar
                                         {
-                                            foreach (var transicaoRegraDestino in regraDestino.transicoes)
-                                            {
-                                                ItemRegraAdicionar transicaoAdicionar = new ItemRegraAdicionar
-                                                {
-                                                    final = regraDestino.final,
-                                                    nomeRegra = regra.nomeRegra,
-                                                    regraTransicao = transicaoRegraDestino.regraTransicao,
-                                                    simbolo = transicaoRegraDestino.simbolo
-                                                };
-                                                transicoesAdicionar.Add(transicaoAdicionar);
-                                            }
-                                        }
+                                            final = regraDestino.final,
+                                            nomeRegra = regra.nomeRegra,
+                                            regraTransicao = transicaoRegraDestino.regraTransicao,
+                                            simbolo = transicaoRegraDestino.simbolo
+                                        };
+                                        transicoesAdicionar.Add(transicaoAdicionar);
                                     }
-                                    transicao.valida = false;
-                                    alterou = true;
                                 }
                             }
+                            transicao.valida = false;
                         }
                     }
-                    foreach (var transicao in transicoesAdicionar)
+                }
+                foreach (var transicao in transicoesAdicionar)
+                {
+                    ItemRegra novaTransicao = new ItemRegra
                     {
-                        ItemRegra novaTransicao = new ItemRegra
-                        {
-                            regraTransicao = transicao.regraTransicao,
-                            simbolo = transicao.simbolo
-                        };
+                        regraTransicao = transicao.regraTransicao,
+                        simbolo = transicao.simbolo
+                    };
 
-                        Regra regra = BuscarRegra(regras, transicao.nomeRegra);
-                        if (!VerificaExistenciaTransicaoRegra(regra, novaTransicao))
-                        {
-                            regra.transicoes.Add(novaTransicao);
-                            if (transicao.final)
-                                regra.final = true;
-                        }
+                    Regra regra = BuscarRegra(regras, transicao.nomeRegra);
+                    if (!VerificaExistenciaTransicaoRegra(regra, novaTransicao))
+                    {
+                        regra.transicoes.Add(novaTransicao);
+                        if (transicao.final)
+                            regra.final = true;
                     }
-                } while (alterou == true);
+                }
                 ImprimirRegras(regras);
                 ImprimirCSV(regras, alfabeto, nomesEstados, "AutomatoFinitoSemEspilonTransicoes.csv");
             }
@@ -518,7 +506,6 @@ namespace ProjetoLFA
                             }
                         }
                     }
-
 
 
                     foreach (var contador in contadorTransicoes)
@@ -636,6 +623,7 @@ namespace ProjetoLFA
                                 }
                             }
                         }
+
                     }
                 }
 
@@ -644,6 +632,7 @@ namespace ProjetoLFA
                 ImprimirRegras(regras);
                 ImprimirCSV(regras, alfabeto, nomesEstados, "AutomatoFinitoDeterminizado.csv");
             }
+
             //====== Remover estados inalcançáveis
             {
                 foreach (var regraChamada in regras)
@@ -671,6 +660,7 @@ namespace ProjetoLFA
                     }
                 }
             }
+
             //====== Remover Estados Mortos
             {
                 foreach (var estado in nomesEstados)
@@ -705,6 +695,7 @@ namespace ProjetoLFA
                 ImprimirRegras(regras);
                 ImprimirCSV(regras, alfabeto, nomesEstados, "AutomatoFinitoMinimizado.csv");
             }
+
             //====== Estado de erro
             {
                 var deveCriarEstadoErro = 0;
@@ -764,6 +755,9 @@ namespace ProjetoLFA
                 ImprimirRegras(regras);
                 ImprimirCSV(regras, alfabeto, nomesEstados, "AutomatoFinitoEstadoErro.csv");
             }
+
+
+            
         }
 
         public static Regra BuscarRegra(dynamic regras, String nomeRegra)
