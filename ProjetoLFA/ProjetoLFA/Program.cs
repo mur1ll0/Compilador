@@ -316,7 +316,7 @@ namespace ProjetoLFA
             }
             //====== Define as Regras pelos tokens
             {
-                var estadoAtual = "S";
+                var estadoAtual = "S"; 
                 var temRegra = 0;
                 foreach (var token in tokens)
                 {
@@ -402,7 +402,8 @@ namespace ProjetoLFA
                             }
                             transicao.simbolo = '&';
                         }
-                        if (transicao.simbolo.Equals('&')) regra.final = true;
+                        if (transicao.simbolo.Equals('&'))
+                            regra.final = true;
                     }
                 }
             }
