@@ -1,12 +1,9 @@
-test
-testa
-testas
 au1i = 5
 a = 0
 ao
 
-testa (au1i @= 10):
+oou (au1i @= 10):
 au1i = au1i + 1
-testaDenovo (au1i @= a):
+ooui (au1i @= a):
 a = a + 1
-falha ao = au1i + a * (1 / 3) + 2
+oo ao = au1i + a * (1 / 3) + 2

@@ -59,7 +59,7 @@ namespace AnalisadorLexico
         {
             String text = "";
 
-            text += "Pos" + ';';
+            text += "Linha" + ';';
             text += "Estado" + ';';
             text += "Rotulo" + ';';
             text += "\r\n";
@@ -116,7 +116,7 @@ namespace AnalisadorLexico
                 }
                 Console.WriteLine("");
             }
-            Console.WriteLine("Teste ma[9][4] = " + afdMatriz[9].afdCol[4]);
+            //Console.WriteLine("Teste ma[9][4] = " + afdMatriz[9].afdCol[4]);
             //List<int> teste = FindState("L", "6", afdMatriz);
             //Console.WriteLine("Teste ma[L][6] = " + afdMatriz[teste[0]].afdCol[teste[1]]);
 
@@ -125,7 +125,7 @@ namespace AnalisadorLexico
             string estadoAnt = "";  //Estado anterior
             List<int> indices;  //Indices da matriz AFD
             buffer = "";
-            int pos = 0;    //Contador de posição no arquivo
+            int pos = 0;    //Contador de posição no arquivo, no caso é a linha do codigo onde esta
             ts tsItem;  //Item da tabela de simbolos
             foreach (String linha in codigo)
             {
@@ -140,7 +140,7 @@ namespace AnalisadorLexico
                             {
                                 tsItem = new ts();
                                 tsItem.estado = estado;
-                                tsItem.posicao = pos - 1;
+                                tsItem.posicao = pos;
                                 tsItem.rotulo = buffer;
                                 buffer = "";
                                 tabela.Add(tsItem);
@@ -157,7 +157,6 @@ namespace AnalisadorLexico
                                 tsItem.posicao = pos;
                                 tsItem.rotulo = buffer;
                                 tabela.Add(tsItem);
-                                pos++;
                             }
 
                             //Agora salva o separador
@@ -180,7 +179,6 @@ namespace AnalisadorLexico
                             }
                             buffer += c;
                         }
-                        pos++;
                     }
 
                     //Fim de linha também é separador
@@ -192,12 +190,13 @@ namespace AnalisadorLexico
                     tabela.Add(tsItem);
                     estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
                 }
+                pos++;
             }
 
             //=== Imprimir tabela de simbolos
             foreach(ts item in tabela)
             {
-                Console.WriteLine("Pos:" + item.posicao + " Estado:" + item.estado + " Rotulo:" + item.rotulo);
+                Console.WriteLine("Linha:" + item.posicao + " Estado:" + item.estado + " Rotulo:" + item.rotulo);
             }
 
             //=== Imprimir em arquivo CSV
