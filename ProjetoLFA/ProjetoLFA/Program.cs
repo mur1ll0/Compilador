@@ -798,14 +798,14 @@ namespace ProjetoLFA
                         text += estado + ';';
                         foreach (char letra in alfabeto)
                         {
+                            needcoma = 0;
                             foreach (var transicao in regra.transicoes)
                             {
-								needcoma = 0;
                                 if (transicao.valida)
                                 {
                                     if (transicao.simbolo == letra)
                                     {
-                                        if(needcoma == 1)
+                                        if (needcoma == 1)
                                         {
                                             text += ',' + transicao.regraTransicao;
                                         }
