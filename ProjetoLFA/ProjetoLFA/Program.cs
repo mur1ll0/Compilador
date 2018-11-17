@@ -63,7 +63,9 @@ namespace ProjetoLFA
 
         static void Main(string[] args)
         {
-            String[] nomesParaNovasRegras = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "X", "W", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AX", "AW", "AY", "AZ" };
+            String[] nomesParaNovasRegras = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "X", "W", "Y", "Z",
+                "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AX", "AW", "AY", "AZ",
+                "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BK", "BL", "BM", "BN", "BO", "BP", "BQ", "BR", "BS", "BT", "BU", "BV", "BX", "BW", "BY", "BZ"};
             List<GramaticaRegular> gramaticasRegulares = new List<GramaticaRegular>();
             List<String> tokens = new List<String>();
             List<Char> alfabeto = new List<Char>();
@@ -378,6 +380,40 @@ namespace ProjetoLFA
             {
                 ImprimirRegras(regras);
                 ImprimirCSV(regras, alfabeto, nomesEstados, "AutomatoFinitoOriginal.csv");
+            }
+
+            //====== Identificar estados finais e epsilon transições
+            {
+                //ItemRegra itemRegra = null;
+                foreach (var regra in regras)
+                {
+                    if (regra.transicoes.Count == 0)
+                    {
+                        regra.final = true;
+
+/*                        itemRegra = new ItemRegra();
+                        itemRegra.simbolo = '&';
+                        itemRegra.regraTransicao = "X";
+                        regra.transicoes.Add(itemRegra);*/
+                    }
+                    /*foreach (var transicao in regra.transicoes)
+                    {
+                        if (transicao.regraTransicao.Length == 0)
+                        {
+                            transicao.regraTransicao = "X";
+
+                        }
+                        if (transicao.simbolo.Equals('\0'))
+                        {
+                            if (!alfabeto.Contains('&'))
+                            {
+                                alfabeto.Add('&');
+                            }
+                            transicao.simbolo = '&';
+                        }
+                        if (transicao.simbolo.Equals('&')) regra.final = true;
+                    }*/
+                }
             }
             //====== Remover Epsilon Transições
             {
