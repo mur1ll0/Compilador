@@ -1,23 +1,42 @@
-oo
-oou
-ooui
-<
->
-<=
-=>
-=
-==
+e
+ou
+se
+else
+senao
+DoCase
+caso
+EndCase
+ask
+corpo
+return
+pflut
+number
+char
+entre
+{
+}
 (
 )
-@=
+=
+>
+<
+<>
+<=
+>=
+==
 +
 -
 /
 *
-%
+,
 
-<S> ::= a<A> | e<A> | i<A> | o<A> | u<A> | 1<B> | 2<B> | 3<B> | 4<B> | 5<B> | 6<B> | 7<B> | 8<B> | 9<B> | 0<B>
-<A> ::= a<A> | e<A> | i<A> | o<A> | u<A> | 1<A> | 2<A> | 3<A> | 4<A> | 5<A> | 6<A> | 7<A> | 8<A> | 9<A> | 0<A> | <C>
-<B> ::= 1<B> | 2<B> | 3<B> | 4<B> | 5<B> | 6<B> | 7<B> | 8<B> | 9<B> | 0<B> | <D>
-<C> ::= a | e | i | o | u | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0
-<D> ::= 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0
+
+
+
+<S> ::= a<A> | b<A> | c<A> | d<A> | e<A> | f<A> | g<A> | h<A> | i<A> | j<A> | k<A> | l<A> | m<A> | n<A> | o<A> | p<A> | q<A> | r<A> | s<A> | t<A> | u<A> | v<A> | x<A> | w<A> | y<A> | z<A> |  1<B> | 2<B> | 3<B> | 4<B> | 5<B> | 6<B> | 7<B> | 8<B> | 9<B> | 0<B>
+<A> ::= a<A> | b<A> | c<A> | d<A> | e<A> | f<A> | g<A> | h<A> | i<A> | j<A> | k<A> | l<A> | m<A> | n<A> | o<A> | p<A> | q<A> | r<A> | s<A> | t<A> | u<A> | v<A> | x<A> | w<A> | y<A> | z<A> |  1<A> | 2<A> | 3<A> | 4<A> | 5<A> | 6<A> | 7<A> | 8<A> | 9<A> | 0<A> | <C>
+<B> ::= 1<B> | 2<B> | 3<B> | 4<B> | 5<B> | 6<B> | 7<B> | 8<B> | 9<B> | 0<B> | .<E> | <D>
+<C> ::= a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | x | w | y | z | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0
+<D> ::= a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | x | w | y | z | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0
+<E> ::= 1<F> | 2<F> | 3<F> | 4<F> | 5<F> | 6<F> | 7<F> | 8<F> | 9<F> | 0<F>
+<F> ::= 1<F> | 2<F> | 3<F> | 4<F> | 5<F> | 6<F> | 7<F> | 8<F> | 9<F> | 0<F> | <D>
