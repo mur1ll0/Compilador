@@ -1,9 +1,19 @@
-au1i = 5
-a = 0
-ao
-
-oou (au1i @= 10):
-au1i = au1i + 1
-ooui (au1i @= a):
-a = a + 1
-oo ao = au1i + a * (1 / 3) + 2
+corpo{
+	pflut altura
+	pflut peso
+	pflut imc
+	ask(altura)
+	ask(peso)
+	imc = (peso / ( altura * altura ) )
+	
+	DoCase
+		caso(imc < 18.5 )
+			return 1
+		caso(imc entre(18.5,25))				
+			return 2
+		caso(imc entre(25,30))
+			return 3
+		caso(imc==30)
+			return 4
+	EndCase
+}
