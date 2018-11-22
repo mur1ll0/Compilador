@@ -1,0 +1,1 @@
+{ "Data":[ {"Estado":"A", "Aceita":"Identifier"}, {"Estado":"B", "Aceita":"Numeral"},{"Estado": "F", "Aceita":"Float"}]}
