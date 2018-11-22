@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace AnalisadorLexico
 {
@@ -13,6 +15,8 @@ namespace AnalisadorLexico
             public String rotulo;
             public String estado;
             public int posicao;
+            public Estado estadoGLC;
+            public Symbol simbolo;
         }
 
         //Automato Finito Deterministico
@@ -25,6 +29,72 @@ namespace AnalisadorLexico
                 afdCol = new List<string>();
             }
 
+        }
+
+
+        //Simbolos: Todos os simbolos terminais e não terminais da linguagem
+        public class Symbol
+        {
+            public Int32 Index;
+            public string Name;
+        }
+
+        //Estados: Numero e qual symbolo o estado aceita
+        public class Estado
+        {
+            public Int32 Index;
+            public Symbol AcceptSymbol;
+        }
+
+
+        //Produções: Todas as producoes da linguagem
+        public class Production
+        {
+            public Int32 Index;
+            public Symbol NonTerminalIndex;
+            public Int32 SymbolCount;
+            public List<ProductionSymbol> ProductionSymbol;
+
+            public Production()
+            {
+                ProductionSymbol = new List<ProductionSymbol>();
+                SymbolCount = 0;
+            }
+        }
+
+        //Tabela LALR: Reduções Saltos e Empilhamentos
+
+        public class LALRState
+        {
+            public Int32 Index;
+            public Int32 ActionCount;
+            public List<LALRAction> LALRAction;
+            public LALRState(){
+                LALRAction = new List<LALRAction>();
+            }
+        }
+
+        public class LALRAction
+        {
+            public Symbol SymbolIndex;
+            public Int32 Action;
+            public Int32 Value;
+        }
+
+        public class ProductionSymbol
+        {
+            public Symbol Symbol;
+        }
+
+        public class Mapeamento
+        {
+            public List<DadosMapeamento> Data;
+        }
+
+        public class DadosMapeamento
+        {
+            public string Estado;
+            public string Aceita;
         }
         
 
@@ -75,6 +145,18 @@ namespace AnalisadorLexico
             System.IO.File.WriteAllText(nomeArquivo, text);
         }
 
+        public static Symbol GetSymbol(int Index, List<Symbol> Symbols)
+        {
+            foreach (var Symbol in Symbols)
+            {
+                if(Symbol.Index == Index)
+                {
+                    return Symbol;
+                }
+            }
+            return null;
+        }
+
 
         static void Main(string[] args)
         {
@@ -88,6 +170,7 @@ namespace AnalisadorLexico
             //===== Definir arquivos de entrada
             string[] codigo = System.IO.File.ReadAllLines(@"codigo.txt");
             string[] afd = System.IO.File.ReadAllLines(@"AutomatoFinitoEstadoErro.csv");
+            string mapeamento = System.IO.File.ReadAllText(@"mapeamentoEstados.txt");
 
             //=== Carregar AFD em uma matriz
             List<AFD> afdMatriz = new List<AFD>();
@@ -127,6 +210,10 @@ namespace AnalisadorLexico
             buffer = "";
             int pos = 0;    //Contador de posição no arquivo, no caso é a linha do codigo onde esta
             ts tsItem;  //Item da tabela de simbolos
+
+            string Separadores = "/*+-(){},";
+            string SeparadoresSemEstado = " \t \n";
+
             foreach (String linha in codigo)
             {
                 if(linha.Length > 0)
@@ -134,7 +221,7 @@ namespace AnalisadorLexico
                     foreach (char c in linha)
                     {
                         Console.WriteLine(c);
-                        if (c == ' ')    //Separadores sem estado
+                        if (SeparadoresSemEstado.Contains(c))    //Separadores sem estado
                         {
                             if (!buffer.Equals(""))
                             {
@@ -147,7 +234,7 @@ namespace AnalisadorLexico
                                 estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
                             }
                         }
-                        else if (c == '*' || c == '/' || c == '+' || c == '-' || c == '(' || c == ')')  //Separadores com estado
+                        else if (Separadores.Contains(c))  //Separadores com estado
                         {
                             //Salvar o que tem antes no buffer (se tiver)
                             if (!buffer.Equals(""))
@@ -201,6 +288,281 @@ namespace AnalisadorLexico
 
             //=== Imprimir em arquivo CSV
             ImprimirCSV(tabela, "FitaDeSaida.csv");
+
+
+
+
+
+
+
+            //====================== ANÁLISE SINTÁTICA =====================================================================================================
+
+
+            //=== importa o XML do GOLD Parse
+            string xmlData = @"GramaticaTeste.xml";
+            XDocument doc = XDocument.Load(xmlData);
+            string jsonText = JsonConvert.SerializeXNode(doc);
+            dynamic Tables = JsonConvert.DeserializeObject<dynamic>(jsonText);
+
+            //=== Define as estruturas
+            List<Symbol> colecaoSimbolos = new List<Symbol>();
+            List<Estado> colecaoEstados = new List<Estado>();
+            List<Production> colecaoProducoes = new List<Production>();
+            List<LALRState> colecaoLALRState = new List<LALRState>();
+
+
+            //============= Importa os Simbolos do XML
+
+            foreach (var m_Symbol in Tables.Tables.m_Symbol)
+            {
+                foreach (var Symbols in m_Symbol)
+                {
+                    if (Symbols.Type == Newtonsoft.Json.Linq.JTokenType.Array)
+                    {
+                        foreach (var Symbol in Symbols)
+                        {
+                            Symbol novoSimbolo = new Symbol();
+
+                            foreach (var propriedade in Symbol)
+                            {
+                                if (propriedade.Name == "@Index")
+                                {
+                                    string teste = propriedade.Value;
+                                    novoSimbolo.Index = Int32.Parse(teste);
+                                }
+                                if (propriedade.Name == "@Name")
+                                {
+                                    novoSimbolo.Name = propriedade.Value;
+                                }
+                            }
+                            colecaoSimbolos.Add(novoSimbolo);
+                        }
+                    }
+                }
+            }
+
+            //============== Importa os Estados do XML
+
+
+            foreach (var DFAState in Tables.Tables.DFATable)
+            {
+                foreach (var estados in DFAState)
+                {
+                    if (estados.Type == Newtonsoft.Json.Linq.JTokenType.Array)
+                    {
+                        foreach (var estadoAceitacao in estados)
+                        {
+                            Estado novoEstado = new Estado();
+                            foreach(var propriedade in estadoAceitacao)
+                            {
+                                if (propriedade.Name == "@AcceptSymbol")
+                                {
+                                    string valor = propriedade.Value;
+                                    novoEstado.AcceptSymbol = GetSymbol(Int32.Parse(valor), colecaoSimbolos);                                    
+                                }
+                                if (propriedade.Name == "@Index")
+                                {
+                                    novoEstado.Index = propriedade.Value;
+                                }
+                            }
+                            colecaoEstados.Add(novoEstado);
+                        }
+                    }
+                }             
+            }
+
+            //=============== Importa as Produções do XML
+
+            foreach (var m_Production in Tables.Tables.m_Production)
+            {
+                foreach (var Productions in m_Production)
+                {
+                    if (Productions.Type == Newtonsoft.Json.Linq.JTokenType.Array)
+                    {
+                        foreach (var Production in Productions)
+                        {
+                            Production novaProducao = new Production();
+                            foreach (var propriedade in Production)
+                            {
+                                if (propriedade.Name == "@Index")
+                                {
+                                    string valor = propriedade.Value;
+                                    novaProducao.Index = Int32.Parse(valor);
+                                }
+                                if (propriedade.Name == "@NonTerminalIndex")
+                                {
+                                    string valor = propriedade.Value;                                    
+                                    novaProducao.NonTerminalIndex = GetSymbol(Int32.Parse(valor), colecaoSimbolos);
+                                }
+                                if (propriedade.Name == "@SymbolCount")
+                                {
+                                    string valor = propriedade.Value;
+                                    novaProducao.SymbolCount = Int32.Parse(valor);
+                                }
+                                if (propriedade.Name == "ProductionSymbol")
+                                {
+                                    foreach(var ProductionofProduction in propriedade)
+                                    {
+                                        foreach(var Producao in ProductionofProduction)
+                                        {                      
+                                            foreach (var propriedadeInterna in Producao) {
+                                                ProductionSymbol producao = new ProductionSymbol();
+                                                string valor = propriedadeInterna.Value;
+                                                producao.Symbol = GetSymbol(Int32.Parse(valor), colecaoSimbolos);
+                                                novaProducao.ProductionSymbol.Add(producao);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            colecaoProducoes.Add(novaProducao);
+                        }
+                    }
+                }
+            }
+
+            //=============== Importa tabela LALR do XML
+
+            foreach (var LALRStates in Tables.Tables.LALRTable)
+            {
+                foreach(var LALRStatesPropertie in LALRStates)
+                {
+                    if(LALRStatesPropertie.Type == Newtonsoft.Json.Linq.JTokenType.Array)
+                    {
+                        foreach(var LALRStateProperties in LALRStatesPropertie)
+                        {                            
+                            LALRState novoLALRState = new LALRState();
+                            foreach (var LALRStatePropertie in LALRStateProperties)
+                            {
+
+                                if (LALRStatePropertie.Name == "@Index")
+                                {
+                                    string valor = LALRStatePropertie.Value;
+                                    novoLALRState.Index = Int32.Parse(valor);
+                                }
+                                if (LALRStatePropertie.Name == "@ActionCount")
+                                {
+                                   
+                                    string valor = LALRStatePropertie.Value;
+                                    novoLALRState.ActionCount = Int32.Parse(valor);
+                                }
+                                if (LALRStatePropertie.Name == "LALRAction")
+                                {
+                                    if (novoLALRState.ActionCount > 1)
+                                    {
+                                        
+                                        foreach (var LALRActions in LALRStatePropertie)
+                                        {
+                                            foreach (var LALRAction in LALRActions)
+                                            {
+
+                                                LALRAction novoLALRAction = new LALRAction(); 
+                                                foreach (var LALRActionPropertie in LALRAction)
+                                                {
+                                                    if (LALRActionPropertie.Name == "@SymbolIndex")
+                                                    {                                                       
+                                                        string valor = LALRActionPropertie.Value;
+                                                        novoLALRAction.SymbolIndex = GetSymbol(Int32.Parse(valor), colecaoSimbolos);
+                                                    }
+                                                    if (LALRActionPropertie.Name == "@Action")
+                                                    {
+                                                        
+                                                        string valor = LALRActionPropertie.Value;
+                                                        novoLALRAction.Action = Int32.Parse(valor);
+                                                    }
+                                                    if (LALRActionPropertie.Name == "@Value")
+                                                    {
+                                                        string valor = LALRActionPropertie.Value;
+                                                        novoLALRAction.Value = Int32.Parse(valor);
+                                                    }
+                                                }
+                                                novoLALRState.LALRAction.Add(novoLALRAction);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (var LALRActionProperties in LALRStatePropertie)
+                                        {
+                                            LALRAction novoLALRAction = new LALRAction();
+                                            foreach (var LALRActionPropertie in LALRActionProperties)
+                                            {
+                                                if (LALRActionPropertie.Name == "@SymbolIndex")
+                                                {
+                                                    string valor = LALRActionPropertie.Value;
+                                                    novoLALRAction.SymbolIndex = GetSymbol(Int32.Parse(valor), colecaoSimbolos);
+                                                }
+                                                if (LALRActionPropertie.Name == "@Action")
+                                                {
+
+                                                    string valor = LALRActionPropertie.Value;
+                                                    novoLALRAction.Action = Int32.Parse(valor);
+                                                }
+                                                if (LALRActionPropertie.Name == "@Value")
+                                                {
+                                                    string valor = LALRActionPropertie.Value;
+                                                    novoLALRAction.Value = Int32.Parse(valor);
+                                                }
+                                            }
+                                            novoLALRState.LALRAction.Add(novoLALRAction);
+                                        }
+                                    }
+                                }
+                            }
+                            colecaoLALRState.Add(novoLALRState);
+                        }
+                    }
+                }
+            }
+
+
+            //========== Faz o mapeamento dos estados com a fita de saida
+            Mapeamento mapeamentoEstados = JsonConvert.DeserializeObject<Mapeamento>(mapeamento);
+
+            foreach(var ts in tabela)
+            {
+                foreach(var map in mapeamentoEstados.Data)
+                {
+                    var temMapeamento = 0;
+                    if (ts.estado == map.Estado)
+                    {
+                        foreach(var Simbolo in colecaoSimbolos)
+                        {
+                            if (Simbolo.Name == map.Aceita)
+                            {
+                                ts.simbolo = Simbolo;
+                                break;
+                            }
+                        }
+
+                        
+                        temMapeamento = 1;
+                    }
+
+                    if (temMapeamento == 0)
+                    {
+                        foreach(var Simbolo in colecaoSimbolos)
+                        {
+                            if (Simbolo.Name == ts.rotulo)
+                            {
+                                ts.simbolo = Simbolo;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+
+                foreach (var Estado in colecaoEstados)
+                {
+                    if (Estado.AcceptSymbol == ts.simbolo)
+                    {
+                        ts.estadoGLC = Estado;
+                        break;
+                    }
+                }
+            }
+
         }
     }
 }
