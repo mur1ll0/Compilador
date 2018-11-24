@@ -282,20 +282,33 @@ namespace AnalisadorLexico
 
                             if (buffer != "")
                             {
-
-                                if (FindState(estado, c.ToString(), afdMatriz)[2] == 1) // se é um estado final
-                                {
-                                    tsItem = new ts();
-                                    tsItem.estado = estado;
-                                    tsItem.posicao = pos;
-                                    tsItem.rotulo = buffer;
-                                    buffer = "";
-                                    tabela.Add(tsItem);
-                                    estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+                                if (FindState(estado, c.ToString(), afdMatriz) != null) {
+                                    if (FindState(estado, c.ToString(), afdMatriz)[2] == 1) // se é um estado final
+                                    {
+                                        tsItem = new ts();
+                                        tsItem.estado = estado;
+                                        tsItem.posicao = pos;
+                                        tsItem.rotulo = buffer;
+                                        buffer = "";
+                                        tabela.Add(tsItem);
+                                        estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+                                    }
+                                    else
+                                    {
+                                        buffer += c;
+                                    }
                                 }
                                 else
                                 {
-                                    buffer += c;
+                                    {
+                                        tsItem = new ts();
+                                        tsItem.estado = "!";
+                                        tsItem.posicao = pos;
+                                        tsItem.rotulo = buffer;
+                                        buffer = "";
+                                        tabela.Add(tsItem);
+                                        estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+                                    }
                                 }
                             }
                             buffer += c;
@@ -319,18 +332,30 @@ namespace AnalisadorLexico
                             }
                             else
                             {
-
-                                if (FindState(estado, c.ToString(), afdMatriz)[2] == 1 && (afdMatriz[FindState(estado, c.ToString(), afdMatriz)[0]].afdCol[FindState(estado, c.ToString(), afdMatriz)[1]] == "!"))
+                                if (FindState(estado, c.ToString(), afdMatriz) != null)
                                 {
+                                    if (FindState(estado, c.ToString(), afdMatriz)[2] == 1 && (afdMatriz[FindState(estado, c.ToString(), afdMatriz)[0]].afdCol[FindState(estado, c.ToString(), afdMatriz)[1]] == "!"))
                                     {
-                                        tsItem = new ts();
-                                        tsItem.estado = estado;
-                                        tsItem.posicao = pos;
-                                        tsItem.rotulo = buffer;
-                                        buffer = "";
-                                        tabela.Add(tsItem);
-                                        estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+                                        {
+                                            tsItem = new ts();
+                                            tsItem.estado = estado;
+                                            tsItem.posicao = pos;
+                                            tsItem.rotulo = buffer;
+                                            buffer = "";
+                                            tabela.Add(tsItem);
+                                            estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+                                        }
                                     }
+                                }
+                                else
+                                {
+                                    tsItem = new ts();
+                                    tsItem.estado = "!";
+                                    tsItem.posicao = pos;
+                                    tsItem.rotulo = buffer;
+                                    buffer = "";
+                                    tabela.Add(tsItem);
+                                    estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
                                 }
                                 
                                 indices = FindState(estado, c.ToString(), afdMatriz);
