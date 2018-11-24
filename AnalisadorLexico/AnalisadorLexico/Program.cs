@@ -114,6 +114,13 @@ namespace AnalisadorLexico
                         {
                             index.Add(i);
                             index.Add(j);
+                            int final = 0;
+                            if (afd.afdCol[0].Equals("*" + estado))
+                            {
+                               final = 1;
+                            }
+                            index.Add(final);
+                            
                             return index;
                         }
                         j++;
@@ -123,6 +130,8 @@ namespace AnalisadorLexico
             }
             return null;
         }
+
+        
 
         //=== Imprimir FITA de saída em CSV
         public static void ImprimirCSV(List<ts> tabela, String nomeArquivo)
@@ -206,7 +215,7 @@ namespace AnalisadorLexico
             //=== Ler caracter por caracter do codigo e verificar estados no AFD
             string estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
             string estadoAnt = "";  //Estado anterior
-            List<int> indices;  //Indices da matriz AFD
+            List<int> indices = new List<int> { 0, 0, 0 };  //Indices da matriz AFD
             buffer = "";
             int pos = 0;    //Contador de posição no arquivo, no caso é a linha do codigo onde esta
             ts tsItem;  //Item da tabela de simbolos
@@ -216,11 +225,11 @@ namespace AnalisadorLexico
 
             foreach (String linha in codigo)
             {
-                if(linha.Length > 0)
+                if (linha.Length > 0)
                 {
                     foreach (char c in linha)
                     {
-                        Console.WriteLine(c);
+                        /*Console.WriteLine(c);
                         if (SeparadoresSemEstado.Contains(c))    //Separadores sem estado
                         {
                             if (!buffer.Equals(""))
@@ -265,17 +274,87 @@ namespace AnalisadorLexico
                                 estado = afdMatriz[indices[0]].afdCol[indices[1]];
                             }
                             buffer += c;
+                        }*/
+
+
+                        if (Separadores.Contains(c))
+                        {
+
+                            if (buffer != "")
+                            {
+
+                                if (FindState(estado, c.ToString(), afdMatriz)[2] == 1) // se é um estado final
+                                {
+                                    tsItem = new ts();
+                                    tsItem.estado = estado;
+                                    tsItem.posicao = pos;
+                                    tsItem.rotulo = buffer;
+                                    buffer = "";
+                                    tabela.Add(tsItem);
+                                    estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+                                }
+                                else
+                                {
+                                    buffer += c;
+                                }
+                            }
+                            buffer += c;
+                            indices = FindState(estado, c.ToString(), afdMatriz);
+                            estado = afdMatriz[indices[0]].afdCol[indices[1]];
                         }
+                        else
+                        {
+                            if (SeparadoresSemEstado.Contains(c))
+                            {
+                                if (buffer != "")
+                                {
+                                    tsItem = new ts();
+                                    tsItem.estado = estado;
+                                    tsItem.posicao = pos;
+                                    tsItem.rotulo = buffer;
+                                    buffer = "";
+                                    tabela.Add(tsItem);
+                                    estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+                                }
+                            }
+                            else
+                            {
+
+                                if (FindState(estado, c.ToString(), afdMatriz)[2] == 1 && (afdMatriz[FindState(estado, c.ToString(), afdMatriz)[0]].afdCol[FindState(estado, c.ToString(), afdMatriz)[1]] == "!"))
+                                {
+                                    {
+                                        tsItem = new ts();
+                                        tsItem.estado = estado;
+                                        tsItem.posicao = pos;
+                                        tsItem.rotulo = buffer;
+                                        buffer = "";
+                                        tabela.Add(tsItem);
+                                        estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+                                    }
+                                }
+                                
+                                indices = FindState(estado, c.ToString(), afdMatriz);
+                                estado = afdMatriz[indices[0]].afdCol[indices[1]];
+
+                                buffer += c;
+
+                            }
+                        }
+
+
                     }
 
-                    //Fim de linha também é separador
-                    tsItem = new ts();
-                    tsItem.estado = estado;
-                    tsItem.posicao = pos;
-                    tsItem.rotulo = buffer;
-                    buffer = "";
-                    tabela.Add(tsItem);
-                    estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+
+                    if (buffer != "") {
+                        //Fim de linha também é separador
+                        tsItem = new ts();
+                        tsItem.estado = estado;
+                        tsItem.posicao = pos;
+                        tsItem.rotulo = buffer;
+                        buffer = "";
+                        tabela.Add(tsItem);
+                        estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
+                    }
                 }
                 pos++;
             }
