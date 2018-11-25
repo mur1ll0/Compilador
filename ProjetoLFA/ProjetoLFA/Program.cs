@@ -63,10 +63,10 @@ namespace ProjetoLFA
 
         static void Main(string[] args)
         {
-            String[] nomesParaNovasRegras = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "X", "W", "Y", "Z",
-                "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AX", "AW", "AY", "AZ",
+            String[] nomesParaNovasRegras = { "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "X", "W", "Y", "Z",
                 "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BK", "BL", "BM", "BN", "BO", "BP", "BQ", "BR", "BS", "BT", "BU", "BV", "BX", "BW", "BY", "BZ",
-                "CA", "CB", "CC", "CD", "CE", "CF", "CG", "CH", "CI", "CJ", "CK", "CL", "CM", "CN", "CO", "CP", "CQ", "CR", "CS", "CT", "CU", "CV", "CX", "CW", "CY", "CZ",};
+                "CA", "CB", "CC", "CD", "CE", "CF", "CG", "CH", "CI", "CJ", "CK", "CL", "CM", "CN", "CO", "CP", "CQ", "CR", "CS", "CT", "CU", "CV", "CX", "CW", "CY", "CZ",
+                "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH", "DI", "DJ", "DK", "DL", "DM", "DN", "DO", "DP", "DQ", "DR", "DS", "DT", "DU", "DV", "DX", "DW", "DY", "DZ"};
             List<GramaticaRegular> gramaticasRegulares = new List<GramaticaRegular>();
             List<String> tokens = new List<String>();
             List<Char> alfabeto = new List<Char>();
@@ -200,14 +200,17 @@ namespace ProjetoLFA
                     Console.WriteLine(letra.ToString() + ' ');
                 }
             }
+
+            foreach (String estado in nomesEstados)
+            {
+                Regra regra = new Regra();
+                regra.nomeRegra = estado;
+                regras.Add(regra);
+            }
+
             //====== Define as Regras pelas gramáticas informadas no arquivo
             {
-                foreach (String estado in nomesEstados)
-                {
-                    Regra regra = new Regra();
-                    regra.nomeRegra = estado;
-                    regras.Add(regra);
-                }
+
 
                 foreach (GramaticaRegular gramatica in gramaticasRegulares)
                 {
@@ -265,7 +268,7 @@ namespace ProjetoLFA
 
                                     foreach (Regra regra in regras)
                                     {
-                                        
+
                                         if (regra.nomeRegra.Equals(gramatica.nomeEstado))
                                         {
                                             if (transicao == "")
@@ -317,6 +320,7 @@ namespace ProjetoLFA
                     }
                 }
             }
+
             //====== Define as Regras pelos tokens
             {
                 var estadoAtual = "S"; 
@@ -376,14 +380,16 @@ namespace ProjetoLFA
                     }
                 }
             }
-          
+
+            
+
             //====== Imprimir regras
             {
                 ImprimirRegras(regras);
                 ImprimirCSV(regras, alfabeto, nomesEstados, "AutomatoFinitoOriginal.csv");
             }
 
-            //====== Identificar estados finais e epsilon transições
+            //====== Identificar estados finais e epsilon transiçõess
             {
                 //ItemRegra itemRegra = null;
                 foreach (var regra in regras)

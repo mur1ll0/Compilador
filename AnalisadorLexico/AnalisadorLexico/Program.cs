@@ -69,7 +69,7 @@ namespace AnalisadorLexico
             public Int32 Index;
             public Int32 ActionCount;
             public List<LALRAction> LALRAction;
-            public LALRState(){
+            public LALRState() {
                 LALRAction = new List<LALRAction>();
             }
         }
@@ -96,7 +96,26 @@ namespace AnalisadorLexico
             public string Estado;
             public string Aceita;
         }
-        
+
+        public class Pilha
+        {
+            public List<String> item;
+            override
+            public string ToString() {
+                String ret = "";
+                foreach (String Item in item)
+                {
+                    ret += Item;
+                }
+                return ret;
+
+            }
+            public Pilha()
+            {
+                item = new List<String>();
+            }
+        }
+
 
         //=== Encontrar estado na matriz AFD
         static List<int> FindState(string estado, string simbolo, List<AFD> matriz)
@@ -105,10 +124,10 @@ namespace AnalisadorLexico
             List<int> index = new List<int>();
             foreach (AFD afd in matriz)
             {
-                if (afd.afdCol[0].Equals("*"+estado) || afd.afdCol[0].Equals(estado))
+                if (afd.afdCol[0].Equals("*" + estado) || afd.afdCol[0].Equals(estado))
                 {
                     j = 0;
-                    foreach(string col in matriz[0].afdCol)
+                    foreach (string col in matriz[0].afdCol)
                     {
                         if (col.Equals(simbolo))
                         {
@@ -117,10 +136,10 @@ namespace AnalisadorLexico
                             int final = 0;
                             if (afd.afdCol[0].Equals("*" + estado))
                             {
-                               final = 1;
+                                final = 1;
                             }
                             index.Add(final);
-                            
+
                             return index;
                         }
                         j++;
@@ -131,7 +150,7 @@ namespace AnalisadorLexico
             return null;
         }
 
-        
+
 
         //=== Imprimir FITA de saída em CSV
         public static void ImprimirCSV(List<ts> tabela, String nomeArquivo)
@@ -150,7 +169,7 @@ namespace AnalisadorLexico
                 text += item.rotulo + ';';
                 text += "\r\n";
             }
-            
+
             System.IO.File.WriteAllText(nomeArquivo, text);
         }
 
@@ -158,13 +177,15 @@ namespace AnalisadorLexico
         {
             foreach (var Symbol in Symbols)
             {
-                if(Symbol.Index == Index)
+                if (Symbol.Index == Index)
                 {
                     return Symbol;
                 }
             }
             return null;
         }
+
+
 
 
         static void Main(string[] args)
@@ -187,7 +208,7 @@ namespace AnalisadorLexico
             {
                 AFD afdLin = new AFD();
                 buffer = "";
-                foreach(char c in linha)
+                foreach (char c in linha)
                 {
                     if (c == ';')
                     {
@@ -200,9 +221,9 @@ namespace AnalisadorLexico
             }
 
             //=== Imprimir Matriz do AFD
-            foreach(AFD li in afdMatriz)
+            foreach (AFD li in afdMatriz)
             {
-                foreach(string co in li.afdCol)
+                foreach (string co in li.afdCol)
                 {
                     Console.Write(co + " ");
                 }
@@ -217,7 +238,7 @@ namespace AnalisadorLexico
             string estadoAnt = "";  //Estado anterior
             List<int> indices = new List<int> { 0, 0, 0 };  //Indices da matriz AFD
             buffer = "";
-            int pos = 0;    //Contador de posição no arquivo, no caso é a linha do codigo onde esta
+            int pos = 1;    //Contador de posição no arquivo, no caso é a linha do codigo onde esta
             ts tsItem;  //Item da tabela de simbolos
 
             string Separadores = "/*+-(){},";
@@ -357,7 +378,7 @@ namespace AnalisadorLexico
                                     tabela.Add(tsItem);
                                     estado = afdMatriz[1].afdCol[0]; //Estado atual - inicial
                                 }
-                                
+
                                 indices = FindState(estado, c.ToString(), afdMatriz);
                                 estado = afdMatriz[indices[0]].afdCol[indices[1]];
 
@@ -384,8 +405,15 @@ namespace AnalisadorLexico
                 pos++;
             }
 
+            tsItem = new ts();
+            tsItem.estado = estado;
+            tsItem.posicao = pos;
+            tsItem.rotulo = "EOF";
+            tabela.Add(tsItem);
+
+
             //=== Imprimir tabela de simbolos
-            foreach(ts item in tabela)
+            foreach (ts item in tabela)
             {
                 Console.WriteLine("Linha:" + item.posicao + " Estado:" + item.estado + " Rotulo:" + item.rotulo);
             }
@@ -457,12 +485,12 @@ namespace AnalisadorLexico
                         foreach (var estadoAceitacao in estados)
                         {
                             Estado novoEstado = new Estado();
-                            foreach(var propriedade in estadoAceitacao)
+                            foreach (var propriedade in estadoAceitacao)
                             {
                                 if (propriedade.Name == "@AcceptSymbol")
                                 {
                                     string valor = propriedade.Value;
-                                    novoEstado.AcceptSymbol = GetSymbol(Int32.Parse(valor), colecaoSimbolos);                                    
+                                    novoEstado.AcceptSymbol = GetSymbol(Int32.Parse(valor), colecaoSimbolos);
                                 }
                                 if (propriedade.Name == "@Index")
                                 {
@@ -472,7 +500,7 @@ namespace AnalisadorLexico
                             colecaoEstados.Add(novoEstado);
                         }
                     }
-                }             
+                }
             }
 
             //=============== Importa as Produções do XML
@@ -495,7 +523,7 @@ namespace AnalisadorLexico
                                 }
                                 if (propriedade.Name == "@NonTerminalIndex")
                                 {
-                                    string valor = propriedade.Value;                                    
+                                    string valor = propriedade.Value;
                                     novaProducao.NonTerminalIndex = GetSymbol(Int32.Parse(valor), colecaoSimbolos);
                                 }
                                 if (propriedade.Name == "@SymbolCount")
@@ -505,10 +533,10 @@ namespace AnalisadorLexico
                                 }
                                 if (propriedade.Name == "ProductionSymbol")
                                 {
-                                    foreach(var ProductionofProduction in propriedade)
+                                    foreach (var ProductionofProduction in propriedade)
                                     {
-                                        foreach(var Producao in ProductionofProduction)
-                                        {                      
+                                        foreach (var Producao in ProductionofProduction)
+                                        {
                                             foreach (var propriedadeInterna in Producao) {
                                                 ProductionSymbol producao = new ProductionSymbol();
                                                 string valor = propriedadeInterna.Value;
@@ -529,12 +557,12 @@ namespace AnalisadorLexico
 
             foreach (var LALRStates in Tables.Tables.LALRTable)
             {
-                foreach(var LALRStatesPropertie in LALRStates)
+                foreach (var LALRStatesPropertie in LALRStates)
                 {
-                    if(LALRStatesPropertie.Type == Newtonsoft.Json.Linq.JTokenType.Array)
+                    if (LALRStatesPropertie.Type == Newtonsoft.Json.Linq.JTokenType.Array)
                     {
-                        foreach(var LALRStateProperties in LALRStatesPropertie)
-                        {                            
+                        foreach (var LALRStateProperties in LALRStatesPropertie)
+                        {
                             LALRState novoLALRState = new LALRState();
                             foreach (var LALRStatePropertie in LALRStateProperties)
                             {
@@ -546,7 +574,7 @@ namespace AnalisadorLexico
                                 }
                                 if (LALRStatePropertie.Name == "@ActionCount")
                                 {
-                                   
+
                                     string valor = LALRStatePropertie.Value;
                                     novoLALRState.ActionCount = Int32.Parse(valor);
                                 }
@@ -554,23 +582,23 @@ namespace AnalisadorLexico
                                 {
                                     if (novoLALRState.ActionCount > 1)
                                     {
-                                        
+
                                         foreach (var LALRActions in LALRStatePropertie)
                                         {
                                             foreach (var LALRAction in LALRActions)
                                             {
 
-                                                LALRAction novoLALRAction = new LALRAction(); 
+                                                LALRAction novoLALRAction = new LALRAction();
                                                 foreach (var LALRActionPropertie in LALRAction)
                                                 {
                                                     if (LALRActionPropertie.Name == "@SymbolIndex")
-                                                    {                                                       
+                                                    {
                                                         string valor = LALRActionPropertie.Value;
                                                         novoLALRAction.SymbolIndex = GetSymbol(Int32.Parse(valor), colecaoSimbolos);
                                                     }
                                                     if (LALRActionPropertie.Name == "@Action")
                                                     {
-                                                        
+
                                                         string valor = LALRActionPropertie.Value;
                                                         novoLALRAction.Action = Int32.Parse(valor);
                                                     }
@@ -623,38 +651,45 @@ namespace AnalisadorLexico
             //========== Faz o mapeamento dos estados com a fita de saida
             Mapeamento mapeamentoEstados = JsonConvert.DeserializeObject<Mapeamento>(mapeamento);
 
-            foreach(var ts in tabela)
+            foreach (var ts in tabela)
             {
-                foreach(var map in mapeamentoEstados.Data)
+
+
+
+
+                foreach (var Simbolo in colecaoSimbolos)
                 {
-                    var temMapeamento = 0;
-                    if (ts.estado == map.Estado)
+                    if (Simbolo.Name == ts.rotulo)
                     {
-                        foreach(var Simbolo in colecaoSimbolos)
-                        {
-                            if (Simbolo.Name == map.Aceita)
-                            {
-                                ts.simbolo = Simbolo;
-                                break;
-                            }
-                        }
-
-                        
-                        temMapeamento = 1;
+                        ts.simbolo = Simbolo;
+                        break;
                     }
+                }
+                var temMapeamento = 0;
 
-                    if (temMapeamento == 0)
+                if (ts.simbolo == null)
+                {
+
+                    foreach (var map in mapeamentoEstados.Data)
                     {
-                        foreach(var Simbolo in colecaoSimbolos)
+
+                        if (ts.estado.Substring(0, 1) == map.Estado)
                         {
-                            if (Simbolo.Name == ts.rotulo)
+                            foreach (var Simbolo in colecaoSimbolos)
                             {
-                                ts.simbolo = Simbolo;
-                                break;
+                                if (Simbolo.Name == map.Aceita)
+                                {
+                                    ts.simbolo = Simbolo;
+                                    break;
+                                }
                             }
+
+                            temMapeamento = 1;
                         }
                     }
                 }
+
+
 
 
                 foreach (var Estado in colecaoEstados)
@@ -667,6 +702,94 @@ namespace AnalisadorLexico
                 }
             }
 
+
+
+            Pilha pilha = new Pilha(){};
+
+            pilha.item.Add("0");
+
+            var aceita = 0;
+            int posicao = 0;
+            while (aceita == 0)
+            {
+                var erro = 1;
+                foreach (var LALRState in colecaoLALRState)
+                {
+                    if (LALRState.Index == Int32.Parse(pilha.item[pilha.item.Count - 1]))
+                    {
+                        foreach (var LALRAction in LALRState.LALRAction)
+                        {
+                            if (LALRAction.SymbolIndex.Index == tabela[posicao].simbolo.Index)
+                            {
+                                erro = 0;
+                                switch (LALRAction.Action)
+                                {
+                                    case 1: // Salto     
+                                        pilha.item.Add(tabela[posicao].rotulo);
+                                        pilha.item.Add(LALRAction.Value.ToString());
+                                        posicao++;
+                                        Console.WriteLine(pilha.ToString());
+                                        break;
+                                    case 2: // Reducao
+                                        // busca o tamanho da producao
+                                        
+
+                                        var ProducaoDaReducao = LALRAction.Value;
+                                        var SimboloNaoTerminal = colecaoProducoes[ProducaoDaReducao].NonTerminalIndex;
+
+                                        var tamanho = colecaoProducoes[ProducaoDaReducao].SymbolCount * 2;
+
+                                        pilha.item.RemoveRange(pilha.item.Count - tamanho, tamanho);
+
+                                        foreach (var LALRStateAux in colecaoLALRState)
+                                        {
+                                            if (LALRStateAux.Index == Int32.Parse(pilha.item[pilha.item.Count - 1]))
+                                            {
+                                                foreach (var LALRActionAux in LALRStateAux.LALRAction)
+                                                {
+                                                    if (LALRActionAux.SymbolIndex == SimboloNaoTerminal)
+                                                    {
+                                                        pilha.item.Add(SimboloNaoTerminal.Name);
+                                                        pilha.item.Add(LALRActionAux.Value.ToString());
+                                                        break;
+                                                    }
+                                                }
+                                                break;
+                                            }
+                                        }
+                                        Console.WriteLine(pilha.ToString());
+                                        break;
+                                    case 3: // Empilhamento
+                                        pilha.item.Add(tabela[posicao].simbolo.Name);
+                                        pilha.item.Add(LALRAction.Value.ToString());
+                                        posicao++;
+                                        Console.WriteLine(pilha.ToString());
+                                        break;
+                                    case 4:
+ /*                                       ProducaoDaReducao = LALRAction.Value;
+                                        SimboloNaoTerminal = colecaoProducoes[ProducaoDaReducao].NonTerminalIndex;
+                                        */
+                                        aceita = 1;
+
+ /*                                       tamanho = 2;
+
+                                        pilha.item.RemoveRange(pilha.item.Count - tamanho, tamanho);
+                                        posicao++;
+                                        Console.WriteLine(pilha.ToString());*/
+                                        break;
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                if (erro == 1)
+                {
+                    Console.WriteLine("O Analisador sintático encontrou um erro na linha: " + tabela[posicao].posicao);
+                    break;
+                }
+            }
         }
     }
 }
