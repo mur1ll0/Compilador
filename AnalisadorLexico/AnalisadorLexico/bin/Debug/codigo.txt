@@ -1,19 +1,20 @@
 corpo{
+	pflut pflu
 	pflut altura
 	pflut peso
 	pflut imc
 	ask(altura)
 	ask(peso)
-	imc = (peso / ( altura * altura ) )
+	imc = (peso / (altura * altura))
 	
 	DoCase
-		caso(imc < 18.5 )
+		caso(imc < 18.5)
 			return 1
-		caso(imc entre(18.5,25))				
+		caso(imc entre(18.5,25))
 			return 2
 		caso(imc entre(25,30))
 			return 3
-		caso(imc==30)
+		caso(imc >= 30)
 			return 4
 	EndCase
 }
