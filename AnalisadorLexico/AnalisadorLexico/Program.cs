@@ -710,9 +710,10 @@ namespace AnalisadorLexico
 
             var aceita = 0;
             int posicao = 0;
+            int erro = 1;
             while (aceita == 0)
             {
-                var erro = 1;
+                erro = 1;
                 foreach (var LALRState in colecaoLALRState)
                 {
                     if (LALRState.Index == Int32.Parse(pilha.item[pilha.item.Count - 1]))
@@ -790,6 +791,16 @@ namespace AnalisadorLexico
                     break;
                 }
             }
+
+            if (erro == 0)
+            {
+                Console.WriteLine("Análise Léxica concluída com sucesso!");
+            }
+
+
+            //===================== ANALISADOR SEMÂNTICO ==============================
+
+
         }
     }
 }
